@@ -1,6 +1,7 @@
 # --- secrets (NEVER commit) ---
 .graph_token
 .graph_user_id
+.gh_pat
 cookies.txt
 
 # --- heavy / regenerable artifacts ---

@@ -52,6 +52,12 @@ API_PAUSE = 1.5                            # polite gap between API calls (s)
 DEFAULT_LIMIT = 12                         # Reels per account
 PAGE_SIZE = 25                             # media per page (API max is generous)
 
+# Permissions business_discovery needs (per Meta docs). Missing
+# instagram_manage_insights is the classic cause of "(#10) Application does not
+# have permission for this action" — so we fail fast on it below.
+REQUIRED_SCOPES = ("instagram_basic", "pages_read_engagement", "instagram_manage_insights")
+CRITICAL_SCOPE = "instagram_manage_insights"
+
 # Usernames that appear in the watchlist section but aren't creators to scrape.
 DENYLIST = {"codesamur.ai"}
 
@@ -85,6 +91,28 @@ def api_get(path, params):
             return {"error": {"message": f"HTTP {e.code}: {body[:200]}"}}
     except Exception as e:  # noqa: BLE001
         return {"error": {"message": str(e)}}
+
+
+def preflight(token):
+    """Validate the token via /debug_token and fail fast on missing scopes,
+    so a permission gap surfaces here instead of as a cryptic (#10) mid-run."""
+    data = api_get("debug_token", {"input_token": token, "access_token": token})
+    info = data.get("data", {}) if isinstance(data, dict) else {}
+    if "error" in data or not info:
+        msg = data.get("error", {}).get("message", "no debug_token data") if isinstance(data, dict) else "no data"
+        print(f"  ⚠ token preflight skipped ({msg}) — continuing")
+        return
+    if not info.get("is_valid"):
+        die("access token is not valid per /debug_token — regenerate ./.graph_token")
+    exp = info.get("expires_at")
+    when = time.strftime("%Y-%m-%d", time.localtime(exp)) if exp else "never"
+    print(f"Token OK: app '{info.get('application', '?')}', expires {when}")
+    missing = [s for s in REQUIRED_SCOPES if s not in set(info.get("scopes", []))]
+    if missing:
+        print(f"  ⚠ token is missing scope(s): {', '.join(missing)}")
+    if CRITICAL_SCOPE in missing:
+        die(f"business_discovery requires the '{CRITICAL_SCOPE}' permission — regenerate "
+            f"the token with that scope added (see README/CLAUDE.md). Aborting before wasting API calls.")
 
 
 def resolve_user_id(token):
@@ -185,6 +213,7 @@ def main():
     args = ap.parse_args()
 
     token, uid = load_creds()
+    preflight(token)
     if not uid:
         uid = resolve_user_id(token)
     print(f"IG user id: {uid}")

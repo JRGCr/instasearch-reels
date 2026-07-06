@@ -34,5 +34,13 @@ First run of `fetch_reels.py` also downloads the speech model (~145 MB) into
 If downloads fail with login errors, open `fetch_reels.py` and set
 `COOKIES_FROM_BROWSER = "chrome"`.
 
+## Auto-discovery (optional)
+
+`python3 discover_reels.py` pulls new Reels from your watchlist creators via the sanctioned
+Instagram Graph API and queues them into `inbox.txt` — no manual saving needed. It needs a
+long-lived token in `.graph_token` that includes the **`instagram_manage_insights`** scope; without
+it, `business_discovery` returns a misleading `(#10) … does not have permission` error. The script
+preflights the token and tells you if the scope is missing. (Stdlib-only — plain `python3`, no venv.)
+
 Videos are kept in `videos/` — delete them after processing if you want the space back;
 transcripts stay in the swipe file.

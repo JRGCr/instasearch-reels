@@ -7,6 +7,7 @@ from creators he follows into a searchable swipe file, guided by the team playbo
 
 - `instagram-reels-playbook.md` — team best-practices playbook (specs, algorithm, hooks, cadence). The reference doc; swipe-file learnings feed back into it.
 - `swipe_file.md` — transcripts + takeaways from saved Reels. Every entry gets **Tags** (hooks / editing / strategy / ads / lead-gen / …) and a one-line **Key takeaway**.
+- `discover_reels.py` — **sanctioned auto-discovery**: enumerates the ~53 watchlist creators via the Instagram Graph API `business_discovery` edge, records metrics to `reels_index.json`, and appends new permalinks to `inbox.txt`. Stdlib-only (no venv needed — runs under system `python3`). Creds: `.graph_token` + `.graph_user_id` (or `IG_GRAPH_TOKEN`/`IG_USER_ID`). See the **Graph API** note below.
 - `fetch_reels.py` — downloads Reels listed in `inbox.txt` into `videos/` via yt-dlp (venv: `.venv/bin/python fetch_reels.py`). First run downloads the Whisper model to `models/`.
 - `process_reels.py` — transcribes `videos/*` with faster-whisper (local model, CPU/int8), appends structured entries to `swipe_file.md`.
 - `inbox.txt` — paste Reel URLs here, one per line. `.fetched_urls` / `.transcribed` track state (don't delete unless reprocessing intentionally).
@@ -24,6 +25,26 @@ from creators he follows into a searchable swipe file, guided by the team playbo
 3. `.venv/bin/python process_reels.py` — transcribe → swipe file (run with `.venv/bin/python` if faster-whisper is in the venv)
 4. Fill in Tags + Key takeaway for each new entry: extract the *principle/tactic*, not a description. Note hook formula used, CTA structure, anything that maps to a playbook section.
 5. If a tactic is significant, propose adding it to the playbook.
+
+## Graph API (business_discovery) — permissions & gotchas
+
+- **`business_discovery` requires the `instagram_manage_insights` permission**, on top of
+  `instagram_basic` + `pages_read_engagement` ([Meta docs](https://developers.facebook.com/docs/instagram-platform/instagram-graph-api/reference/ig-user/business_discovery/)).
+  Without it the call fails with `(#10) Application does not have permission for this action` — a
+  misleading error that looks app-level but is really the missing scope. `discover_reels.py` now
+  **preflights** the token via `/debug_token` and aborts early naming the missing scope.
+- **Fix a missing/expired token:** regenerate a long-lived User token for app *CodeSamur.ai Publisher*
+  (`1665931797961650`) in the Graph API Explorer **with `instagram_manage_insights` added**, exchange
+  for long-lived (`/oauth/access_token?grant_type=fb_exchange_token`), then `echo -n '<tok>' > .graph_token`.
+- **Advanced Access caveat:** querying accounts you don't own with insights-class permissions may
+  require **Advanced Access** for `instagram_manage_insights` (App Review), not just Standard. If
+  `(#10)` persists *after* adding the scope, that App Review is the next gate — a Meta-side approval,
+  not a code change.
+- Only **public business/creator** targets return data; personal/private accounts are skipped and
+  listed at the end (feed those to `inbox.txt` manually).
+- **`.venv` is Linux-built** (created on the self-hosted runner / container, `/home/node/...`), so its
+  `python` symlink is dead on macOS. Discovery is stdlib-only → run it with the Mac's system `python3`;
+  `fetch_reels.py`/`process_reels.py` (faster-whisper) run on the Linux runner or a locally-rebuilt venv.
 
 ## Conventions
 
