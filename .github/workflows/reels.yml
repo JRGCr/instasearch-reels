@@ -41,7 +41,7 @@ jobs:
 
       - name: Discover Reels (Graph API, sanctioned)
         env:
-          IG_GRAPH_TOKEN: ${{ secrets.IG_GRAPH_TOKEN }}
+          IG_GRAPH_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}   # existing repo secret
         run: .venv/bin/python discover_reels.py --limit "${{ github.event.inputs.limit || '12' }}"
 
       - name: Fetch videos (throttled)
