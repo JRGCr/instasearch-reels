@@ -1,0 +1,16 @@
+# Paste Reel URLs below (one per line), then run: python3 fetch_reels.py
+https://www.instagram.com/p/DMX3GT4tF2h/
+# brock11johnson — IG growth strategy
+https://www.instagram.com/reel/DadLauogBjx/
+https://www.instagram.com/reel/DacuHdskaCo/
+https://www.instagram.com/reel/DabDHAmPT36/
+# alex.kreate — viral content strategy
+https://www.instagram.com/reel/Daanzautq-G/
+https://www.instagram.com/reel/DaVHgz0TVT_/
+# harry__allsop — VFX (likely no speech; tests the visual-Reel path)
+https://www.instagram.com/reel/DaS2nm0MY9o/
+https://www.instagram.com/reel/DaCpKv-M4rM/
+# askvinh — communication/delivery
+https://www.instagram.com/reel/DadEOH4ijdh/
+https://www.instagram.com/reel/Daag4o3FEoC/
+https://www.instagram.com/reel/DaX8LmND6WD/

@@ -1,0 +1,18 @@
+# --- secrets (NEVER commit) ---
+.graph_token
+.graph_user_id
+cookies.txt
+
+# --- heavy / regenerable artifacts ---
+.venv/
+models/
+videos/
+__pycache__/
+*.pyc
+
+# --- runner scratch ---
+.DS_Store
+
+# NOTE: state files ARE committed on purpose so dedup survives across runs:
+#   .fetched_urls, .transcribed, .discovered, inbox.txt,
+#   swipe_file.md, reels_index.json

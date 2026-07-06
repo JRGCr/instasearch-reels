@@ -1,0 +1,6 @@
+# Reel capture pipeline deps. Top-level only — pip resolves the rest
+# (faster-whisper pulls in ctranslate2, av, onnxruntime, tokenizers, numpy).
+# Loose pins so it installs across arch (Apple Silicon / Intel / Linux runner).
+yt-dlp>=2025.1
+huggingface_hub>=0.24
+faster-whisper>=1.1

@@ -1,0 +1,63 @@
+name: reels-pipeline
+
+# Orchestrated by GitHub, executed on YOUR machine via a self-hosted runner.
+# GitHub schedules/triggers + holds the token secret + commits results;
+# the heavy work (Graph API, yt-dlp, Whisper) runs locally where the model,
+# venv, and Instagram session live.
+
+on:
+  workflow_dispatch:            # manual "Run workflow" button
+    inputs:
+      limit:
+        description: "Reels per account to discover"
+        default: "12"
+  schedule:
+    - cron: "0 14 * * 1"        # Mondays 14:00 UTC (runner must be awake)
+
+# Never let two runs stomp on the state files / git push at once.
+concurrency:
+  group: reels-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: write               # lets the job commit swipe_file.md etc. back
+
+jobs:
+  capture:
+    runs-on: [self-hosted, linux]     # matches the labels on your registered runner
+    steps:
+      - name: Checkout (keep untracked model/venv/videos between runs)
+        uses: actions/checkout@v4
+        with:
+          clean: false                # preserve models/, .venv/, videos/ across runs
+
+      - name: Ensure venv + deps (uv)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          test -x .venv/bin/python || uv venv --python 3.12 .venv
+          uv pip install --python .venv/bin/python -r requirements.txt
+
+      - name: Discover Reels (Graph API, sanctioned)
+        env:
+          IG_GRAPH_TOKEN: ${{ secrets.IG_GRAPH_TOKEN }}
+        run: .venv/bin/python discover_reels.py --limit "${{ github.event.inputs.limit || '12' }}"
+
+      - name: Fetch videos (throttled)
+        run: .venv/bin/python fetch_reels.py
+
+      - name: Transcribe → swipe file
+        run: .venv/bin/python process_reels.py
+
+      - name: Commit results
+        run: |
+          git config user.name  "reels-bot"
+          git config user.email "reels-bot@users.noreply.github.com"
+          git add inbox.txt swipe_file.md reels_index.json .fetched_urls .transcribed .discovered
+          if git diff --cached --quiet; then
+            echo "No new captures this run."
+          else
+            git commit -m "reels: capture $(date -u +%F)"
+            git push
+          fi
