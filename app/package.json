@@ -1,0 +1,17 @@
+{
+  "name": "instasearch-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "InstaSearch — competitive intelligence for Instagram professional accounts (Cloudflare Worker).",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 execute instasearch --file=./schema.sql",
+    "db:init:local": "wrangler d1 execute instasearch --local --file=./schema.sql",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

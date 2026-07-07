@@ -1,0 +1,27 @@
+name = "instasearch"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Hosted under the codesamur.ai domain so the reviewer-facing app lives on the
+# real, established brand domain. Point DNS/route at this once deployed.
+# routes = [
+#   { pattern = "instasearch.codesamur.ai", custom_domain = true }
+# ]
+
+# KV: server-side sessions + OAuth state (token never reaches the client).
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "REPLACE_WITH_KV_ID"          # `wrangler kv namespace create SESSIONS`
+
+# D1: tracked accounts, metric snapshots, media.
+[[d1_databases]]
+binding = "DB"
+database_name = "instasearch"
+database_id = "REPLACE_WITH_D1_ID"  # `wrangler d1 create instasearch`
+
+# Non-secret vars. Secrets (META_APP_SECRET) are set via `wrangler secret put`.
+[vars]
+META_APP_ID = "1665931797961650"    # shared app "CodeSamur.ai Publisher"
+
+# Secrets to set (never commit these):
+#   wrangler secret put META_APP_SECRET
