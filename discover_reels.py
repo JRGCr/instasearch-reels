@@ -100,6 +100,12 @@ def preflight(token):
     info = data.get("data", {}) if isinstance(data, dict) else {}
     if "error" in data or not info:
         msg = data.get("error", {}).get("message", "no debug_token data") if isinstance(data, dict) else "no data"
+        # An expired/invalid token surfaces here as an error. Don't limp on and
+        # fail later with something cryptic — stop and point at the refresh helper.
+        if isinstance(data, dict) and data.get("error", {}).get("code") in (190,) or "expired" in msg.lower():
+            die(f"access token rejected ({msg}).\n"
+                f"       Refresh it:  python3 refresh_token.py            (if still valid)\n"
+                f"       or reseed:   python3 refresh_token.py --from-short '<new browser token>'")
         print(f"  ⚠ token preflight skipped ({msg}) — continuing")
         return
     if not info.get("is_valid"):
