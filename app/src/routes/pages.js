@@ -10,8 +10,9 @@ export function landing(req, env, url, user) {
     : `<a class="btn fb" href="/auth/login">Continue with Facebook</a>`;
   const body = `
   <div class="hero">
+    <span class="eyebrow">📈 Instagram competitive intelligence</span>
     <h1>${PRODUCT_NAME}</h1>
-    <p class="muted" style="font-size:19px;max-width:620px;margin:0 auto 22px">${esc(PRODUCT_TAGLINE)}.
+    <p class="muted" style="font-size:19px;max-width:620px;margin:0 auto 26px">${esc(PRODUCT_TAGLINE)}.
     Track public Instagram business & creator accounts, benchmark their reach and engagement,
     and watch how their content strategy evolves — powered by Instagram's official Graph API.</p>
     ${cta}
