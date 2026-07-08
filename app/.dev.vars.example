@@ -1,0 +1,4 @@
+# Local dev secrets for `wrangler dev` (copy to `.dev.vars`, which is gitignored).
+# The app secret for "CodeSamur.ai Publisher" (App ID 1665931797961650).
+# In production this is set via: wrangler secret put META_APP_SECRET
+META_APP_SECRET=your-app-secret-here
