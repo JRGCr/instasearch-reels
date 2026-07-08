@@ -10,9 +10,10 @@ Everything to set in the Meta App Dashboard (developers.facebook.com/apps → ap
 
 | Field | Value |
 |---|---|
-| App icon | 1024×1024 PNG, no Meta trademarks (InstaSearch logo) |
+| App icon | 1024×1024 PNG — use `app/assets/icon.png` (generated; no Meta trademarks) |
 | App domains | `codesamur.ai` |
 | Category | Business and pages (or Utilities & productivity) |
+| App purpose | **"Yourself or your own business"** — accurate: it's an internal tool for our own social team, not a service sold to clients |
 | Privacy Policy URL | `https://instasearch.codesamur.ai/privacy` |
 | Terms of Service URL | `https://instasearch.codesamur.ai/terms` |
 | User data deletion | **Data Deletion Instructions URL** → `https://instasearch.codesamur.ai/data-deletion` |
@@ -55,8 +56,18 @@ Existing publishing permissions stay exactly as they are.
 - [ ] App stays in **Development** mode until approval — do NOT flip to Live pre-approval
       (it can disrupt existing app roles / the live publishing integration).
 
-## App mode note
+## App mode note — Development during review, Live after approval
 
-The app is already **Live** for publishing. Advanced Access is granted **per permission**, so the
-insights request is reviewed on its own. Record the demo in Development mode using your own
-admin/developer account per Meta's guidance; don't change the live app mode to submit.
+This is the one gotcha worth getting right (confirmed against Meta's access-level + app-mode docs):
+
+- **During review:** keep the app in **Development mode**. In Dev mode you can exercise
+  `instagram_manage_insights` / `business_discovery` against **your own connected IG account**
+  (a role user's own data works under Standard Access) — that's enough to record the screencast
+  and satisfy the "≥1 successful call" gate. Advanced Access is granted **per permission**, so the
+  insights request is reviewed on its own without disturbing the live publishing permissions.
+- **After approval:** to query the **non-owned watchlist** in production, the app must be **Live** —
+  Advanced Access only takes effect against accounts you don't own once the app is Live. Flip to
+  Live **only after** approval; flipping early can disrupt existing app roles.
+
+In short: Dev mode is fine (and recommended) to submit; going Live is a post-approval step required
+to actually run watchlist discovery.

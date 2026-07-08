@@ -1,0 +1,84 @@
+name: refresh-graph-token
+
+# Keeps THIS repo's Instagram Graph API discovery token alive by exchanging a
+# still-valid token for a fresh 60-day one (refresh_token.py, stdlib-only).
+#
+# Scoped to instasearch-reels ONLY. It never touches the crimson-scroll-learn
+# publishing token. It no-ops cleanly until the discovery secrets are set
+# (i.e. after Advanced Access is granted and the token is added here).
+#
+# Secrets used (set in this repo's Settings → Secrets and variables → Actions):
+#   META_ACCESS_TOKEN  - the long-lived discovery token to keep fresh (required)
+#   META_APP_SECRET    - app secret, needed to perform the exchange (required)
+#   META_APP_ID        - optional; defaults to 1665931797961650
+#   GH_PAT             - optional PAT with `secrets:write`; if present, the
+#                        refreshed token is written back to META_ACCESS_TOKEN so
+#                        the next run/discovery uses it. Without it the job still
+#                        validates + refreshes but can't persist the new value.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * 0"        # Sundays 12:00 UTC — well inside the 60-day window
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refresh-graph-token
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Guard — skip until discovery secrets exist
+        id: pre
+        env:
+          TOK: ${{ secrets.META_ACCESS_TOKEN }}
+          SEC: ${{ secrets.META_APP_SECRET }}
+        run: |
+          if [ -z "$TOK" ] || [ -z "$SEC" ]; then
+            echo "::notice::META_ACCESS_TOKEN / META_APP_SECRET not set yet — nothing to refresh. Skipping."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.pre.outputs.ready == 'true'
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        if: steps.pre.outputs.ready == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh token (exchange for a fresh 60-day window)
+        if: steps.pre.outputs.ready == 'true'
+        env:
+          IG_GRAPH_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          IG_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          IG_APP_ID: ${{ secrets.META_APP_ID }}
+        run: |
+          python3 refresh_token.py --check || true
+          python3 refresh_token.py --force
+          # refresh_token.py writes the new token to ./.graph_token
+          test -s .graph_token || { echo "::error::no refreshed token produced"; exit 1; }
+
+      - name: Persist refreshed token back to the secret
+        if: steps.pre.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::GH_PAT not set — refreshed token NOT written back to META_ACCESS_TOKEN. Set a PAT with secrets:write to auto-persist."
+            exit 0
+          fi
+          gh secret set META_ACCESS_TOKEN --repo "$GITHUB_REPOSITORY" --body "$(cat .graph_token)"
+          echo "::notice::META_ACCESS_TOKEN updated with the refreshed 60-day token."
+
+      - name: Scrub token file from the runner
+        if: always()
+        run: rm -f .graph_token

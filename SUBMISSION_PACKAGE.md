@@ -4,6 +4,17 @@ Everything the reviewer reads/watches. Honest framing: InstaSearch is a legitima
 competitive-intelligence tool that uses Meta's own `business_discovery` endpoint on **public
 professional accounts**. No scraping, no private data, no redistribution.
 
+**App purpose declaration:** set to **"Yourself or your own business"** — this is an internal tool
+for our own social team, not a service offered to clients. Note: this declaration is accurate but
+does **not** reduce the review requirements. Meta gates Advanced Access on *whose accounts the data
+is about* (we query accounts we don't own → Advanced Access + App Review + Business Verification are
+all still required), not on whether the app has external users. The full package below applies.
+
+**App mode:** submit and record the demo in **Development mode** (querying your own connected IG
+account works under Standard Access — enough for the screencast and the "≥1 successful call" gate).
+Flip the app to **Live only after approval**, which is when Advanced Access permits querying the
+non-owned watchlist in production. See `META_DASHBOARD_CHECKLIST.md`.
+
 ---
 
 ## 1. Use-case justification (paste into App Review, per permission)
