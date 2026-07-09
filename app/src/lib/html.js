@@ -1,7 +1,7 @@
 // Server-rendered HTML. One layout, inline CSS — a clean, professional surface
 // (reviewers judge legitimacy partly on how real the product looks).
 
-import { PRODUCT_NAME, PRODUCT_TAGLINE } from "./config.js";
+import { PRODUCT_NAME, PRODUCT_TAGLINE, PRODUCT_OWNER } from "./config.js";
 
 export function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) =>
@@ -44,6 +44,10 @@ const CSS = `
     border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
   .brand{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink);font-size:17px;letter-spacing:-.02em}
   .brand:hover{text-decoration:none}
+  .badge{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+    padding:3px 8px;border-radius:6px;background:#eceef4;color:#5a627a;margin-left:2px;border:1px solid #dde0ea}
+  .banner-internal{background:#0d1020;color:#c7cbe0;font-size:12.5px;text-align:center;padding:6px 22px;letter-spacing:.01em}
+  .banner-internal strong{color:#fff}
   .logo{width:30px;height:30px;border-radius:9px;background:var(--grad);display:inline-block;
     box-shadow:var(--sh-lg);position:relative}
   .logo::before{content:"";position:absolute;width:11px;height:11px;border:2.5px solid #fff;border-radius:50%;top:6px;left:6px}
@@ -112,13 +116,15 @@ export function layout({ title, body, user }) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <style>${CSS}</style></head><body>
+  <div class="banner-internal">🔒 Internal tool — for <strong>${PRODUCT_OWNER}</strong> team use only. Not a public product.</div>
   <header class="nav">
-    <a class="brand" href="/"><span class="logo"></span>${PRODUCT_NAME}</a>
+    <a class="brand" href="/"><span class="logo"></span>${PRODUCT_NAME}<span class="badge">Internal</span></a>
     ${nav}
   </header>
   ${body}
   <footer>
     ${PRODUCT_NAME} — ${esc(PRODUCT_TAGLINE)}.<br>
+    An internal tool operated by ${PRODUCT_OWNER}; access is limited to our own team.<br>
     <a href="/">Home</a> · <a href="/privacy">Privacy</a> · <a href="/data-deletion">Data deletion</a> · <a href="/terms">Terms</a>
     <br>Uses the Instagram Graph API. Not affiliated with or endorsed by Meta.
   </footer>

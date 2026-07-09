@@ -2,19 +2,22 @@
 // These satisfy Meta App Review compliance requirements AND explain the product.
 
 import { html, layout, esc } from "../lib/html.js";
-import { PRODUCT_NAME, PRODUCT_TAGLINE, CONTACT_EMAIL } from "../lib/config.js";
+import { PRODUCT_NAME, PRODUCT_TAGLINE, PRODUCT_OWNER, CONTACT_EMAIL } from "../lib/config.js";
 
 export function landing(req, env, url, user) {
   const cta = user
     ? `<a class="btn" href="/app">Open dashboard</a>`
-    : `<a class="btn fb" href="/auth/login">Continue with Facebook</a>`;
+    : `<a class="btn fb" href="/auth/login">Sign in (${PRODUCT_OWNER} team)</a>
+       <p class="muted" style="font-size:13.5px;margin-top:14px">Access is restricted to the ${PRODUCT_OWNER} team.
+       This is an internal tool, not a public product.</p>`;
   const body = `
   <div class="hero">
-    <span class="eyebrow">📈 Instagram competitive intelligence</span>
+    <span class="eyebrow">🔒 Internal tool · ${PRODUCT_OWNER} social team</span>
     <h1>${PRODUCT_NAME}</h1>
-    <p class="muted" style="font-size:19px;max-width:620px;margin:0 auto 26px">${esc(PRODUCT_TAGLINE)}.
-    Track public Instagram business & creator accounts, benchmark their reach and engagement,
-    and watch how their content strategy evolves — powered by Instagram's official Graph API.</p>
+    <p class="muted" style="font-size:19px;max-width:640px;margin:0 auto 26px">${esc(PRODUCT_TAGLINE)}.
+    We use it in-house to track public Instagram business & creator accounts, benchmark their reach
+    and engagement, and watch how their content strategy evolves — for ${PRODUCT_OWNER}'s own social
+    strategy, powered by Instagram's official Graph API.</p>
     ${cta}
   </div>
   <div class="wrap">
@@ -29,17 +32,18 @@ export function landing(req, env, url, user) {
     <div class="card">
       <h3>How it works</h3>
       <ol class="muted">
-        <li>Sign in with Facebook and connect the Instagram professional account you manage.</li>
-        <li>Add the public business/creator accounts you want to benchmark.</li>
+        <li>A ${PRODUCT_OWNER} team member signs in with Facebook and connects our own Instagram
+            professional account.</li>
+        <li>We add the public business/creator accounts we want to benchmark.</li>
         <li>${PRODUCT_NAME} calls the Instagram Graph API <code>business_discovery</code> endpoint to
-            fetch public profile metrics and recent media, and stores snapshots so you can see trends.</li>
+            fetch public profile metrics and recent media, and stores snapshots so we can see trends.</li>
       </ol>
-      <p class="muted">${PRODUCT_NAME} only reads <strong>public</strong> data on
-      <strong>professional</strong> (business/creator) accounts, exactly as Meta's API permits.
-      It never accesses private accounts or private data.</p>
+      <p class="muted">${PRODUCT_NAME} is an internal ${PRODUCT_OWNER} tool. It only reads
+      <strong>public</strong> data on <strong>professional</strong> (business/creator) accounts,
+      exactly as Meta's API permits, and never accesses private accounts or private data.</p>
     </div>
   </div>`;
-  return html(layout({ title: "Competitive intelligence for Instagram", body, user }));
+  return html(layout({ title: `Internal competitive-intelligence tool · ${PRODUCT_OWNER}`, body, user }));
 }
 
 export function privacy(req, env, url, user) {

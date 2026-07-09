@@ -28,5 +28,6 @@ export const SESSION_COOKIE = "isid";
 export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
 export const PRODUCT_NAME = "InstaSearch";
 export const PRODUCT_TAGLINE =
-  "Competitive intelligence for Instagram professional accounts";
+  "Internal competitive-intelligence tool for the CodeSamur.ai social team";
+export const PRODUCT_OWNER = "CodeSamur.ai";
 export const CONTACT_EMAIL = "blackbaysolutions@gmail.com";
