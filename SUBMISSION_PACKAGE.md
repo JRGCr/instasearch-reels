@@ -54,24 +54,40 @@ non-owned watchlist in production. See `META_DASHBOARD_CHECKLIST.md`.
 > Test credentials, if the reviewer prefers ours: _[add a test Facebook user from Roles → Test Users,
 > or provide login]_.
 
-## 3. Screencast script (1080p, English, ~2–3 min)
+## 3. Screencast script (~2–3 min)
 
-Record the actual hosted app. Show the whole flow end to end:
+**Recording specs (verified against Meta's screen-recording doc):**
+- **No audio** — reviewers don't listen to it. Use **on-screen captions / text overlays** for every
+  narration line below instead of voice-over.
+- **1080p or higher**; keep the browser window **≤1440px wide**; **English** UI; **enlarged cursor**;
+  use the mouse (not keyboard shortcuts) so actions are visible.
+- Start **logged out** (log out of Facebook first) and capture the **complete** logged-out → login →
+  grant → use flow. Omitting the grant or the data-in-use step is the #1 rejection cause.
+- Sign in with a **role user** (an Admin/Developer/Tester on the app). **Never a fake account** —
+  that's an automatic rejection.
 
-1. **(0:00) Landing page** — show `instasearch.codesamur.ai`, read the one-line value prop, point to
-   Privacy / Data Deletion / Terms links in the footer.
-2. **(0:15) Login** — click **Continue with Facebook**. Show the Facebook login screen, then the
-   **permissions dialog** — pause so the reviewer clearly sees `instagram_manage_insights` being
-   granted and the Page/IG account selection.
-3. **(0:45) Dashboard** — arrive signed in; note "Signed in as @youraccount".
-4. **(1:00) Add an account** — type a public creator username, click **Track account**. Show the
-   success message with follower count + posts captured. *This is the `business_discovery` call.*
-5. **(1:30) Account detail** — open the account; show followers KPI, the follower-trend sparkline,
-   and **Top content by engagement** with like/comment counts and Instagram permalinks. Narrate:
-   "This is public data InstaSearch retrieved via business_discovery, which is what we use the
-   insights permission for."
-6. **(2:15) Refresh** — click **Refresh all metrics**; explain each refresh stores a snapshot so we
-   can chart competitors' growth over time.
+**IMPORTANT — demo target:** In the recording, **Track an Instagram professional account you OWN /
+manage** (e.g. your own brand account). Non-owned creators require the very Advanced Access you're
+requesting, so they won't return data until approval; a self-owned query works now at Standard Access
+and is the correct way to demonstrate the mechanism + satisfy the "≥1 successful API call" prerequisite.
+
+Shot list (put each italic line on screen as a caption):
+
+1. **(0:00) Landing** — show `instasearch.codesamur.ai`; caption the value prop; point to the
+   Privacy / Data Deletion / Terms footer links.
+2. **(0:15) Login** — click **Continue with Facebook** from a logged-out state. Show the Facebook
+   login, then the **permissions dialog** — pause on it so `instagram_manage_insights` is clearly
+   visible being granted, and show the Page / IG account selection.
+3. **(0:45) Dashboard** — arrive signed in; caption "Signed in as @youraccount (an account we manage)".
+4. **(1:00) Track (the API call)** — type **your own** professional account's username, click
+   **Track account**. Show the success flash with follower count + posts captured. *Caption: "This is
+   the business_discovery call — instagram_manage_insights is what authorizes it."*
+5. **(1:30) Account detail (data in use)** — open the account; show the followers KPI, the
+   follower-trend sparkline, and **Top content by engagement** with like/comment counts and permalinks.
+   *Caption: "The insights data returned by business_discovery, rendered and stored by our app."* This
+   is the critical "show what the app does with the data" step reviewers require.
+6. **(2:15) Refresh** — click **Refresh all metrics**; *caption: "each refresh stores a snapshot so we
+   can chart growth over time."*
 7. **(2:30) Data deletion** — open `/data-deletion`, click **Delete all my data**, show confirmation.
 8. **(2:45) Privacy** — briefly show `/privacy` describing exactly this data use.
 

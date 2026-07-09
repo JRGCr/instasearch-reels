@@ -34,6 +34,22 @@ Everything to set in the Meta App Dashboard (developers.facebook.com/apps → ap
   legal name + address + EIN/registration number).
 - Required for Advanced Access. Allow ~3 business days.
 
+## STEP 0 — Fix "Invalid Scopes" first (add the permission to the app)
+
+Until `instagram_manage_insights` is in the app's permission set, the OAuth dialog throws
+**"Invalid Scopes: instagram_manage_insights"** and login can't complete. Add it:
+
+- **Dashboard → Dashboard (left menu) → your Use Case → Customize → Permissions and features →
+  click "Add" next to `instagram_manage_insights`.** (Classic UI: **App Review → Permissions and
+  Features → Get Access**.)
+- Also confirm the dependencies are added: `instagram_basic`, `pages_read_engagement`, `pages_show_list`.
+- Once added, **Standard Access is auto-granted** → "Invalid Scopes" disappears and a **role user**
+  (Admin/Developer/Tester) can log in and use it. This is what unblocks the demo + the "1 successful
+  call" gate — *before* Advanced Access is approved.
+- Confirm the app is the **"Instagram API with Facebook Login"** variant — only it exposes
+  `business_discovery` + `instagram_manage_insights`. (An Instagram-Login use case makes the scope
+  invalid — a possible cause of the "Invalid Scopes" error.)
+
 ## App Review → Permissions and Features
 
 Request **Advanced Access** for:
@@ -42,6 +58,10 @@ Request **Advanced Access** for:
 - (confirm `instagram_basic` and `pages_read_engagement` are at least Standard/Advanced as needed)
 
 Existing publishing permissions stay exactly as they are.
+
+**Demo/call target:** the "1 successful call" and the screencast must use an account you **own/manage**
+(Standard Access covers it now). Non-owned watchlist creators need the Advanced Access you're
+requesting, so they only work after approval.
 
 ## Before you click Submit (hard gates)
 
