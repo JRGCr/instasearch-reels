@@ -63,7 +63,15 @@ jobs:
       - name: Sync Worker secret from GitHub → Cloudflare
         env:
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
-        run: printf '%s' "$META_APP_SECRET" | npx wrangler secret put META_APP_SECRET
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if printf '%s' "$META_APP_SECRET" | npx wrangler secret put META_APP_SECRET; then
+              echo "secret synced on attempt $attempt"; exit 0
+            fi
+            echo "::warning::secret put failed (attempt $attempt) — retrying in 10s (Cloudflare API can 503 transiently)"
+            sleep 10
+          done
+          echo "::error::secret put failed after 5 attempts"; exit 1
 
       - name: Report URL
         run: echo "::notice::Deployed → https://instasearch.blackbaysolutions.workers.dev"
