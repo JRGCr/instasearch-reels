@@ -19,3 +19,6 @@ __pycache__/
 # NOTE: state files ARE committed on purpose so dedup survives across runs:
 #   .fetched_urls, .transcribed, .discovered, inbox.txt,
 #   swipe_file.md, reels_index.json
+
+# Local D1 backups (may contain PII) — never commit
+backups/

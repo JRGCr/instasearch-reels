@@ -11,13 +11,13 @@ compatibility_date = "2025-01-01"
 # KV: server-side sessions + OAuth state (token never reaches the client).
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "REPLACE_WITH_KV_ID"          # `wrangler kv namespace create SESSIONS`
+id = "365f54f65d974afeaaf27eb30e75f7f6"
 
 # D1: tracked accounts, metric snapshots, media.
 [[d1_databases]]
 binding = "DB"
 database_name = "instasearch"
-database_id = "REPLACE_WITH_D1_ID"  # `wrangler d1 create instasearch`
+database_id = "b5b6b133-bac2-4693-b939-6c97e87f2b83"
 
 # Non-secret vars. Secrets (META_APP_SECRET) are set via `wrangler secret put`.
 [vars]
