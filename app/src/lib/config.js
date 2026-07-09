@@ -30,4 +30,4 @@ export const PRODUCT_NAME = "InstaSearch";
 export const PRODUCT_TAGLINE =
   "Internal competitive-intelligence tool for the CodeSamur.ai social team";
 export const PRODUCT_OWNER = "CodeSamur.ai";
-export const CONTACT_EMAIL = "blackbaysolutions@gmail.com";
+export const CONTACT_EMAIL = "support@codesamur.ai";
