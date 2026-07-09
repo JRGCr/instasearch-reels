@@ -3,10 +3,10 @@ main = "src/index.js"
 compatibility_date = "2025-01-01"
 
 # Hosted under the codesamur.ai domain so the reviewer-facing app lives on the
-# real, established brand domain. Point DNS/route at this once deployed.
-# routes = [
-#   { pattern = "instasearch.codesamur.ai", custom_domain = true }
-# ]
+# real, established brand domain. Custom Domain auto-provisions DNS + cert.
+routes = [
+  { pattern = "instasearch.codesamur.ai", custom_domain = true }
+]
 
 # KV: server-side sessions + OAuth state (token never reaches the client).
 [[kv_namespaces]]
